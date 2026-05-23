@@ -21,6 +21,14 @@ body,
   height: 100%;
 }
 
+/* Hide native calendar icon on date inputs so only the custom one shows */
+.date-input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+.date-input::-webkit-inner-spin-button {
+  display: none;
+}
+
 body {
   background: #f8fafc;
   color: #0f172a;
