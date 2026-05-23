@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { Button, CloseButton } from '../common/index.js'
 
 /* ── helpers ── */
 function isoToday() {
@@ -267,16 +268,10 @@ export default function EmployeeDateRangeModal({
         <div className="relative w-full max-w-3xl rounded-3xl bg-white p-8 text-left shadow-2xl">
 
           {/* Close */}
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); close() }}
-            className="absolute right-5 top-5 z-10 rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
-            aria-label="Close"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+            <CloseButton
+              onClick={(e) => { e.stopPropagation(); close() }}
+              className="absolute right-5 top-5 z-10"
+            />
 
           {/* Fields */}
           <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr_1fr]">
@@ -306,14 +301,8 @@ export default function EmployeeDateRangeModal({
 
           {/* Actions */}
           <div className="mt-8 flex items-center justify-end gap-4">
-            <button type="button" onClick={close}
-              className="px-5 py-2.5 text-base font-semibold text-slate-600 hover:text-slate-800 transition-colors">
-              Cancel
-            </button>
-            <button type="button" onClick={apply}
-              className="rounded-xl bg-indigo-600 px-10 py-2.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
-              Apply
-            </button>
+            <Button variant="ghost" size="lg" onClick={close}>Cancel</Button>
+            <Button variant="primary" size="lg" onClick={apply}>Apply</Button>
           </div>
 
         </div>

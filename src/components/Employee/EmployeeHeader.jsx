@@ -1,3 +1,5 @@
+import { Button } from '../common/index.js'
+
 export default function EmployeeHeader({ onExport, onAdd }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white shadow-sm px-5 py-5">
@@ -18,27 +20,22 @@ export default function EmployeeHeader({ onExport, onAdd }) {
         </div>
 
         <div className="flex flex-wrap items-center justify-start gap-3 sm:justify-end">
-          <button
-            onClick={onExport}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
-          >
+          <Button variant="secondary" size="md" onClick={onExport}>
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v10" />
               <path strokeLinecap="round" strokeLinejoin="round" d="m7 11 5 5 5-5" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 21h14" />
             </svg>
             Export Excel
-          </button>
-          <button
-            onClick={onAdd}
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-          >
+          </Button>
+
+          <Button variant="primary" size="md" onClick={onAdd}>
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
             </svg>
             Add Employee
-          </button>
+          </Button>
         </div>
       </div>
     </div>
