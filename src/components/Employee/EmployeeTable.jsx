@@ -31,7 +31,7 @@ export default function EmployeeTable({
           <thead className="sticky top-0 z-10 bg-slate-50">
             <tr className="border-b border-slate-200">
               {['ID', 'Employee Name', 'Duration', 'Start Time - End Time', 'Due Hours', 'Department', 'Project', 'Notes', 'Action', ''].map((h, idx) => (
-                <th key={idx} className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold text-slate-500">{h}</th>
+                <th key={idx} className="whitespace-nowrap px-4 py-3 text-left text-xs font-bold text-slate-700">{h}</th>
               ))}
             </tr>
           </thead>
@@ -41,7 +41,7 @@ export default function EmployeeTable({
               return (
                 <tr key={row.id} className="border-t border-slate-100 bg-white transition-colors hover:bg-slate-50">
                   <td className="whitespace-nowrap px-4 py-3 text-xs font-semibold text-slate-600">#{row.id}</td>
-                  <td className="whitespace-nowrap px-4 py-3 text-sm font-semibold text-slate-900">{row.employeeName}</td>
+                  <td className="whitespace-nowrap px-4 py-3 text-sm font-normal text-slate-700">{row.employeeName}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-sm text-slate-700">{row.duration}</td>
                   <td className="px-4 py-3 text-sm text-slate-700">
                     <div className="leading-tight">

@@ -12,7 +12,7 @@ export default function EmployeeHeader({ onExport, onAdd }) {
             </svg>
           </div>
           <div>
-            <div className="text-base font-semibold text-slate-900">Employee Time</div>
+            <div className="text-base font-bold text-slate-900">Employee Time</div>
             <div className="text-sm text-slate-500">Manage your time logs</div>
           </div>
         </div>

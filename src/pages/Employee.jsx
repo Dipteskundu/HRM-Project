@@ -1,17 +1,19 @@
 import { useMemo, useState, useCallback, useEffect } from 'react'
 import seed from '../data/employeeData.json'
 
-import { daysBetween, exportEmployeesCsv, range } from '../utils/helpers.js'
+import { exportEmployeesCsv, range } from '../utils/helpers.js'
 import EmployeeHeader from '../components/Employee/EmployeeHeader.jsx'
 import EmployeeFilters from '../components/Employee/EmployeeFilters.jsx'
 import EmployeeTable from '../components/Employee/EmployeeTable.jsx'
 import EmployeeAddModal from '../components/Employee/EmployeeAddModal.jsx'
 import EmployeeEditModal from '../components/Employee/EmployeeEditModal.jsx'
+import EmployeeDateRangeModal from '../components/Employee/EmployeeDateRangeModal.jsx'
 
 const STORAGE_KEY = 'hrm_employees_v1'
 const STATUS_OPTIONS = ['Approved', 'Rejected', 'Pending']
 const DEPARTMENT_OPTIONS = ['Design', 'Development', 'Sales', 'Product']
-const DATE_RANGE_OPTIONS = ['All', 'Last 7 days', 'Last 30 days']
+const PROJECT_OPTIONS = ['CRM Project', 'HRM Project']
+const DATE_RANGE_OPTIONS = ['All', 'Last 7 Days', 'Last 30 Days', 'Custom']
 
 export default function Employee() {
   const [addOpen, setAddOpen] = useState(false)
@@ -21,7 +23,8 @@ export default function Employee() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [departmentFilter, setDepartmentFilter] = useState('')
-  const [dateRange, setDateRange] = useState('')
+  const [dateRangeOpen, setDateRangeOpen] = useState(false)
+  const [dateFilter, setDateFilter] = useState({ preset: '', start: '', end: '' })
 
   const [employees, setEmployees] = useState(() => {
     try {
@@ -43,6 +46,10 @@ export default function Employee() {
 
   const [transientStatus, setTransientStatus] = useState({})
   const [openMenuId, setOpenMenuId] = useState(null)
+
+  const previewEmployeeId = useMemo(() => {
+    return employees.reduce((m, r) => Math.max(m, Number(r.id) || 0), 1000) + 1
+  }, [employees])
 
   const getStatus = useCallback((row) => {
     return transientStatus[row.id] ?? row.status ?? 'Pending'
@@ -142,20 +149,28 @@ export default function Employee() {
       out = out.filter((r) => String(r.department) === String(departmentFilter))
     }
 
-    if (dateRange && dateRange !== 'All') {
-      const today = new Date()
+    if (dateFilter?.start || dateFilter?.end) {
+      const start = dateFilter.start || ''
+      const end = dateFilter.end || ''
       out = out.filter((r) => {
-        if (!r.date) return false
-        const diff = daysBetween(r.date, today)
-        if (diff < 0) return false
-        if (dateRange === 'Last 7 days') return diff <= 7
-        if (dateRange === 'Last 30 days') return diff <= 30
+        const d = String(r.date || '')
+        if (!d) return false
+        if (start && d < start) return false
+        if (end && d > end) return false
         return true
       })
     }
 
     return out
-  }, [employees, searchTerm, statusFilter, departmentFilter, dateRange, getStatus])
+  }, [employees, searchTerm, statusFilter, departmentFilter, dateFilter, getStatus])
+
+  const dateFilterLabel = useMemo(() => {
+    if (!dateFilter?.preset && !dateFilter?.start && !dateFilter?.end) return 'Date Range'
+    if (dateFilter?.preset && dateFilter.preset !== 'Custom') return dateFilter.preset
+    const s = dateFilter?.start || 'Start'
+    const e = dateFilter?.end || 'End'
+    return `${s} → ${e}`
+  }, [dateFilter])
 
   const [currentPageState, setCurrentPageState] = useState(1)
   const pageSize = 8
@@ -206,15 +221,19 @@ export default function Employee() {
     const employeeName = String(form.get('employeeName') || '').trim()
     const department = String(form.get('department') || '').trim()
     const project = String(form.get('project') || '').trim()
-    if (!employeeName || !department || !project) return
+    const startTime = String(form.get('startTime') || '').trim()
+    const endTime = String(form.get('endTime') || '').trim()
+    if (!employeeName || !department || !startTime) return
+
+    const resolvedProject = project || PROJECT_OPTIONS[0] || 'Project'
 
     addEmployee({
       employeeName,
       department,
-      project,
+      project: resolvedProject,
       duration: '03 hr',
-      startTime: '08:30 am',
-      endTime: '11:30 am',
+      startTime,
+      endTime: endTime || '11:30 am',
       dueHours: '05 hr',
       notes: 'Working on Data Management...',
       status: 'Pending',
@@ -267,17 +286,17 @@ export default function Employee() {
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <div className="text-sm font-semibold text-slate-900">Employee Time Logs</div>
+              <div className="text-sm font-bold text-slate-900">Employee Time Logs</div>
             </div>
             
             <EmployeeFilters 
               searchTerm={searchTerm} setSearchTerm={setSearchTerm}
-              dateRange={dateRange} setDateRange={setDateRange}
+              dateFilterLabel={dateFilterLabel}
+              onOpenDateRange={() => setDateRangeOpen(true)}
               statusFilter={statusFilter} setStatusFilter={setStatusFilter}
               departmentFilter={departmentFilter} setDepartmentFilter={setDepartmentFilter}
               setCurrentPageState={setCurrentPageState}
               STATUS_OPTIONS={STATUS_OPTIONS}
-              DATE_RANGE_OPTIONS={DATE_RANGE_OPTIONS}
               DEPARTMENT_OPTIONS={DEPARTMENT_OPTIONS}
             />
           </div>
@@ -311,8 +330,26 @@ export default function Employee() {
         </div>
       </div>
 
-      <EmployeeAddModal addOpen={addOpen} setAddOpen={setAddOpen} handleAddSubmit={handleAddSubmit} />
+      <EmployeeAddModal
+        addOpen={addOpen}
+        setAddOpen={setAddOpen}
+        handleAddSubmit={handleAddSubmit}
+        previewEmployeeId={previewEmployeeId}
+        departmentOptions={DEPARTMENT_OPTIONS}
+        projectOptions={PROJECT_OPTIONS}
+      />
       <EmployeeEditModal editOpen={editOpen} setEditOpen={setEditOpen} editingRow={editingRow} setEditingRow={setEditingRow} handleEditSubmit={handleEditSubmit} />
+
+      <EmployeeDateRangeModal
+        open={dateRangeOpen}
+        onClose={() => setDateRangeOpen(false)}
+        value={dateFilter}
+        options={DATE_RANGE_OPTIONS}
+        onApply={(next) => {
+          setDateFilter(next)
+          setCurrentPageState(1)
+        }}
+      />
     </div>
   )
 }
