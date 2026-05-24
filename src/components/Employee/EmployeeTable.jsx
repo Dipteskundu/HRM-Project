@@ -57,7 +57,7 @@ export default function EmployeeTable({
                     {status === 'Pending' ? (
                       <div className="flex items-center justify-end gap-2">
                         <Button variant="danger" size="sm" onClick={() => reject(row)}>Reject</Button>
-                        <Button variant="primary" size="sm" onClick={() => approve(row)}>Approve</Button>
+                        <Button variant="success" size="sm" onClick={() => approve(row)}>Approve</Button>
                       </div>
                     ) : (
                       <div className="flex items-center justify-end gap-3">
@@ -219,7 +219,7 @@ export default function EmployeeTable({
                       Reject
                     </Button>
                     <Button
-                      variant="primary"
+                      variant="success"
                       size="md"
                       className="w-full justify-center"
                       onClick={() => approve(row)}
