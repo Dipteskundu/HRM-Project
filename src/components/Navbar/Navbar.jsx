@@ -27,12 +27,12 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
-      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-6 px-4 py-3 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-6 px-4 py-3 sm:px-6 md:grid-cols-[1fr_auto_1fr] lg:px-8">
         <div className="flex items-center gap-3 justify-self-start">
           <img src={logo} alt="Pluto" className="h-7 w-auto" />
         </div>
 
-        <nav className="hidden items-center justify-center gap-6 text-sm md:flex justify-self-center">
+        <nav className="hidden items-center justify-center gap-3 text-sm md:flex justify-self-center">
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}
@@ -59,7 +59,7 @@ export default function Navbar() {
 
         <div className="flex items-center justify-end gap-4 justify-self-end">
           <div className="hidden md:flex items-center gap-3">
-            <div className="hidden lg:block w-[260px] xl:w-[320px]">
+            <div className="hidden lg:block w-[200px] xl:w-[300px]">
               <div className="relative w-full">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 text-slate-400" aria-hidden="true">
@@ -78,7 +78,7 @@ export default function Navbar() {
 
             <div className="hidden text-right text-xs leading-tight text-slate-600 sm:block">
               <div className="font-semibold text-slate-900">Sadik Hasan</div>
-              <div>{formatNavbarDate(new Date())}</div>
+              <div className="whitespace-nowrap">{formatNavbarDate(new Date())}</div>
             </div>
             <div className="h-9 w-9 overflow-hidden rounded-md border border-slate-200 bg-slate-100">
               <img src={profileImg} alt="Sadik Hasan" className="h-full w-full object-cover" />
