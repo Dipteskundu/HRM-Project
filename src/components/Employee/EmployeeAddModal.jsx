@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button, FormInput, FormSelect, Modal } from '../common/index.js'
 
 function PlusButton({ onClick, label }) {
@@ -29,8 +29,8 @@ export default function EmployeeAddModal({
   const [extraDepartments, setExtraDepartments] = useState([])
   const [extraProjects,    setExtraProjects]    = useState([])
 
-  const allDepartments = useMemo(() => [...departmentOptions, ...extraDepartments], [departmentOptions, extraDepartments])
-  const allProjects    = useMemo(() => [...projectOptions,    ...extraProjects],    [projectOptions,    extraProjects])
+  const allDepartments = [...departmentOptions, ...extraDepartments]
+  const allProjects = [...projectOptions, ...extraProjects]
 
   function close() { setAddOpen(false) }
 
@@ -46,7 +46,6 @@ export default function EmployeeAddModal({
   return (
     <Modal open={addOpen} onClose={close} title="Employee Information" maxWidth="max-w-4xl">
       <form onSubmit={handleAddSubmit} className="space-y-6">
-        {/* Employee ID (read-only) */}
         <FormInput
           label="Employee ID"
           readOnly
@@ -54,7 +53,6 @@ export default function EmployeeAddModal({
           className="max-w-[220px] bg-slate-50 font-semibold"
         />
 
-        {/* Name */}
         <FormInput
           label="Type Employee Name"
           required
@@ -62,7 +60,6 @@ export default function EmployeeAddModal({
           placeholder="e.g. Sadik Hasan"
         />
 
-        {/* Department + Project */}
         <div className="grid gap-8 sm:grid-cols-2">
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -96,7 +93,6 @@ export default function EmployeeAddModal({
           </div>
         </div>
 
-        {/* Start + End Time */}
         <div className="grid gap-8 sm:grid-cols-2">
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -130,7 +126,6 @@ export default function EmployeeAddModal({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="mt-10 flex items-center justify-end gap-6">
           <Button variant="ghost" size="lg" onClick={close}>Cancel</Button>
           <Button variant="primary" size="lg" type="submit">Add Employee</Button>

@@ -1,6 +1,4 @@
-/**
- * CloseButton — the X icon button used in every modal header.
- */
+
 export default function CloseButton({ onClick, className = '' }) {
   return (
     <button

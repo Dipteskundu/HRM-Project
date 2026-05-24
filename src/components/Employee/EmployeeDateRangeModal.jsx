@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Button, CloseButton } from '../common/index.js'
 
-/* ── helpers ── */
+
 function isoToday() {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -28,7 +28,7 @@ const DAY_NAMES  = ['Su','Mo','Tu','We','Th','Fr','Sa']
 const MONTH_NAMES = ['January','February','March','April','May','June',
                      'July','August','September','October','November','December']
 
-/* ── Floating calendar rendered via portal ── */
+
 function CalendarPortal({ value, onChange, onClose, anchorRef }) {
   const today = isoToday()
   const initial = value || today
@@ -37,7 +37,7 @@ function CalendarPortal({ value, onChange, onClose, anchorRef }) {
   const [pos,   setPos]   = useState({ top: 0, left: 0 })
   const calRef = useRef(null)
 
-  /* Position the calendar below the anchor field */
+  
   useEffect(() => {
     if (!anchorRef.current) return
     const rect = anchorRef.current.getBoundingClientRect()
@@ -49,7 +49,7 @@ function CalendarPortal({ value, onChange, onClose, anchorRef }) {
     setPos({ top, left: rect.left })
   }, [anchorRef])
 
-  /* Close on outside click */
+  
   useEffect(() => {
     function handler(e) {
       if (calRef.current && !calRef.current.contains(e.target) &&
@@ -97,7 +97,7 @@ function CalendarPortal({ value, onChange, onClose, anchorRef }) {
       style={{ position: 'fixed', top: pos.top, left: pos.left, zIndex: 9999, width: 280 }}
       className="rounded-2xl border border-slate-200 bg-white shadow-2xl p-4"
     >
-      {/* Header */}
+      
       <div className="mb-3 flex items-center justify-between">
         <span className="text-sm font-bold text-slate-800">
           {MONTH_NAMES[month]} {year}
@@ -121,14 +121,14 @@ function CalendarPortal({ value, onChange, onClose, anchorRef }) {
         </div>
       </div>
 
-      {/* Day headers */}
+      
       <div className="grid grid-cols-7 mb-1">
         {DAY_NAMES.map(d => (
           <div key={d} className="text-center text-[11px] font-semibold text-slate-400 py-1">{d}</div>
         ))}
       </div>
 
-      {/* Day cells */}
+      
       <div className="grid grid-cols-7 gap-y-0.5">
         {cells.map((cell, i) => {
           const isSel   = cell.current && cell.day === selectedDay
@@ -155,7 +155,7 @@ function CalendarPortal({ value, onChange, onClose, anchorRef }) {
         })}
       </div>
 
-      {/* Footer */}
+      
       <div className="mt-3 flex justify-between border-t border-slate-100 pt-3">
         <button type="button" onClick={() => { onChange(''); onClose() }}
           className="text-xs font-semibold text-indigo-500 hover:text-indigo-700 transition-colors">
@@ -171,7 +171,7 @@ function CalendarPortal({ value, onChange, onClose, anchorRef }) {
   )
 }
 
-/* ── Date field with floating calendar ── */
+
 function DateField({ label, value, onChange }) {
   const [open, setOpen] = useState(false)
   const triggerRef = useRef(null)
@@ -211,7 +211,7 @@ function DateField({ label, value, onChange }) {
   )
 }
 
-/* ── Main modal ── */
+
 export default function EmployeeDateRangeModal({
   open,
   onClose,
@@ -219,22 +219,13 @@ export default function EmployeeDateRangeModal({
   onApply,
   options = ['All', 'Last 7 Days', 'Last 30 Days', 'Custom'],
 }) {
-  const initial = useMemo(() => ({
-    preset: value?.preset || '',
-    start:  value?.start  || '',
-    end:    value?.end    || '',
-  }), [value])
+  const presetValue = value?.preset || ''
+  const startValue = value?.start || ''
+  const endValue = value?.end || ''
 
-  const [preset, setPreset] = useState(initial.preset)
-  const [start,  setStart]  = useState(initial.start)
-  const [end,    setEnd]    = useState(initial.end)
-
-  useEffect(() => {
-    if (!open) return
-    setPreset(initial.preset)
-    setStart(initial.start)
-    setEnd(initial.end)
-  }, [open, initial.preset, initial.start, initial.end])
+  const [preset, setPreset] = useState(presetValue)
+  const [start, setStart] = useState(startValue)
+  const [end, setEnd] = useState(endValue)
 
   if (!open) return null
 
@@ -260,22 +251,22 @@ export default function EmployeeDateRangeModal({
 
   return (
     <div className="relative z-50">
-      {/* Backdrop */}
+      
       <div className="fixed inset-0 bg-slate-900/30 backdrop-blur-sm" onClick={close} />
 
-      {/* Modal — centered, fixed height, no overflow clipping */}
+      
       <div className="fixed inset-0 z-10 flex items-start justify-center pt-20 px-4 pb-10 overflow-y-auto">
         <div className="relative w-full max-w-3xl rounded-3xl bg-white p-8 text-left shadow-2xl">
 
-          {/* Close */}
+          
             <CloseButton
               onClick={(e) => { e.stopPropagation(); close() }}
               className="absolute right-5 top-5 z-10"
             />
 
-          {/* Fields */}
+          
           <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr_1fr]">
-            {/* Preset */}
+            
             <div>
               <label className="mb-2 block text-sm font-semibold text-slate-700">Date Range</label>
               <div className="relative">
@@ -299,7 +290,7 @@ export default function EmployeeDateRangeModal({
             <DateField label="End date"   value={end}   onChange={setEnd}   />
           </div>
 
-          {/* Actions */}
+          
           <div className="mt-8 flex items-center justify-end gap-4">
             <Button variant="ghost" size="lg" onClick={close}>Cancel</Button>
             <Button variant="primary" size="lg" onClick={apply}>Apply</Button>
@@ -310,3 +301,4 @@ export default function EmployeeDateRangeModal({
     </div>
   )
 }
+

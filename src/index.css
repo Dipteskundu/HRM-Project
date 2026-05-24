@@ -21,7 +21,6 @@ body,
   height: 100%;
 }
 
-/* Prevent horizontal "jump" when pages change height (scrollbar appears/disappears). */
 html {
   scrollbar-gutter: stable;
 }
@@ -31,7 +30,6 @@ html {
   }
 }
 
-/* Hide native calendar icon on date inputs so only the custom one shows */
 .date-input::-webkit-calendar-picker-indicator {
   display: none;
 }

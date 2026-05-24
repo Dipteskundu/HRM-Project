@@ -1,10 +1,4 @@
-/**
- * EmptyState — centered empty/no-results placeholder.
- *
- * Props:
- *   title   — main heading
- *   message — supporting text
- */
+
 export default function EmptyState({
   title = 'No results found',
   message = 'Try changing your filters.',

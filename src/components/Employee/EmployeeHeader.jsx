@@ -6,7 +6,6 @@ export default function EmployeeHeader({ onExport, onAdd }) {
     <div className="rounded-2xl py-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          {/* Icon box — white card with border, larger to match design */}
           <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm">
             <PiUsersFill className="h-9 w-9 text-indigo-500" />
           </div>

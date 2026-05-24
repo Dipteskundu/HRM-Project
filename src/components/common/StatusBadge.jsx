@@ -1,9 +1,4 @@
-/**
- * StatusBadge — colored pill for Approved / Rejected / Pending status.
- *
- * Props:
- *   status — 'Approved' | 'Rejected' | 'Pending'
- */
+
 
 const CONFIG = {
   Approved: {

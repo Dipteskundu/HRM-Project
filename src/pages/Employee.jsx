@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import seed from '../data/employeeData.json'
 
 import { exportEmployeesCsv, range } from '../utils/helpers.js'
@@ -47,13 +47,11 @@ export default function Employee() {
   const [transientStatus, setTransientStatus] = useState({})
   const [openMenuId, setOpenMenuId] = useState(null)
 
-  const previewEmployeeId = useMemo(() => {
-    return employees.reduce((m, r) => Math.max(m, Number(r.id) || 0), 1000) + 1
-  }, [employees])
+  const previewEmployeeId = employees.reduce((m, r) => Math.max(m, Number(r.id) || 0), 1000) + 1
 
-  const getStatus = useCallback((row) => {
+  function getStatus(row) {
     return transientStatus[row.id] ?? row.status ?? 'Pending'
-  }, [transientStatus])
+  }
 
   function approve(row) {
     setTransientStatus((prev) => ({ ...prev, [row.id]: 'Approved' }))
@@ -126,51 +124,50 @@ export default function Employee() {
     })
   }
 
-  const filtered = useMemo(() => {
-    let out = employees
+  let filtered = employees
 
-    const q = String(searchTerm || '').trim().toLowerCase()
-    if (q) {
-      out = out.filter((r) => {
-        const id = String(r.id ?? '').toLowerCase()
-        const name = String(r.employeeName ?? '').toLowerCase()
-        return id.includes(q) || name.includes(q)
-      })
+  const q = String(searchTerm || '').trim().toLowerCase()
+  if (q) {
+    filtered = filtered.filter((r) => {
+      const id = String(r.id ?? '').toLowerCase()
+      const name = String(r.employeeName ?? '').toLowerCase()
+      return id.includes(q) || name.includes(q)
+    })
+  }
+
+  if (statusFilter) {
+    filtered = filtered.filter((r) => {
+      const effective = getStatus(r)
+      return String(effective) === String(statusFilter)
+    })
+  }
+
+  if (departmentFilter) {
+    filtered = filtered.filter((r) => String(r.department) === String(departmentFilter))
+  }
+
+  if (dateFilter?.start || dateFilter?.end) {
+    const start = dateFilter.start || ''
+    const end = dateFilter.end || ''
+    filtered = filtered.filter((r) => {
+      const d = String(r.date || '')
+      if (!d) return false
+      if (start && d < start) return false
+      if (end && d > end) return false
+      return true
+    })
+  }
+
+  let dateFilterLabel = 'Date Range'
+  if (dateFilter?.preset || dateFilter?.start || dateFilter?.end) {
+    if (dateFilter?.preset && dateFilter.preset !== 'Custom') {
+      dateFilterLabel = dateFilter.preset
+    } else {
+      const s = dateFilter?.start || 'Start'
+      const e = dateFilter?.end || 'End'
+      dateFilterLabel = `${s} → ${e}`
     }
-
-    if (statusFilter) {
-      out = out.filter((r) => {
-        const effective = getStatus(r)
-        return String(effective) === String(statusFilter)
-      })
-    }
-
-    if (departmentFilter) {
-      out = out.filter((r) => String(r.department) === String(departmentFilter))
-    }
-
-    if (dateFilter?.start || dateFilter?.end) {
-      const start = dateFilter.start || ''
-      const end = dateFilter.end || ''
-      out = out.filter((r) => {
-        const d = String(r.date || '')
-        if (!d) return false
-        if (start && d < start) return false
-        if (end && d > end) return false
-        return true
-      })
-    }
-
-    return out
-  }, [employees, searchTerm, statusFilter, departmentFilter, dateFilter, getStatus])
-
-  const dateFilterLabel = useMemo(() => {
-    if (!dateFilter?.preset && !dateFilter?.start && !dateFilter?.end) return 'Date Range'
-    if (dateFilter?.preset && dateFilter.preset !== 'Custom') return dateFilter.preset
-    const s = dateFilter?.start || 'Start'
-    const e = dateFilter?.end || 'End'
-    return `${s} → ${e}`
-  }, [dateFilter])
+  }
 
   const [currentPageState, setCurrentPageState] = useState(1)
   const pageSize = 8
@@ -178,10 +175,8 @@ export default function Employee() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
   const currentPage = Math.min(Math.max(1, currentPageState), totalPages)
   
-  const rows = useMemo(() => {
-    const start = (currentPage - 1) * pageSize
-    return filtered.slice(start, start + pageSize)
-  }, [filtered, currentPage, pageSize])
+  const startIndex = (currentPage - 1) * pageSize
+  const rows = filtered.slice(startIndex, startIndex + pageSize)
 
   function downloadCsv(csv, filename) {
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
@@ -283,7 +278,6 @@ export default function Employee() {
       <EmployeeHeader onExport={handleExport} onAdd={() => setAddOpen(true)} />
 
       <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-        {/* Filters row */}
         <div className="flex flex-col gap-3 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="text-sm font-bold text-slate-900">Employee Time Logs</div>
           <EmployeeFilters
@@ -298,7 +292,6 @@ export default function Employee() {
           />
         </div>
 
-        {/* Table — full width, no extra padding */}
         <div className="border-t border-slate-100 overflow-hidden">
           <EmployeeTable
             rows={rows} getStatus={getStatus}
@@ -308,7 +301,6 @@ export default function Employee() {
           />
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-slate-100">
               <button type="button" onClick={() => setCurrentPageState(Math.max(1, currentPage - 1))} disabled={currentPage === 1} className="rounded-md px-2 py-1 text-sm text-slate-600 hover:bg-slate-100 disabled:opacity-50">← Previous</button>
@@ -338,16 +330,18 @@ export default function Employee() {
       />
       <EmployeeEditModal editOpen={editOpen} setEditOpen={setEditOpen} editingRow={editingRow} setEditingRow={setEditingRow} handleEditSubmit={handleEditSubmit} />
 
-      <EmployeeDateRangeModal
-        open={dateRangeOpen}
-        onClose={() => setDateRangeOpen(false)}
-        value={dateFilter}
-        options={DATE_RANGE_OPTIONS}
-        onApply={(next) => {
-          setDateFilter(next)
-          setCurrentPageState(1)
-        }}
-      />
+      {dateRangeOpen ? (
+        <EmployeeDateRangeModal
+          open
+          onClose={() => setDateRangeOpen(false)}
+          value={dateFilter}
+          options={DATE_RANGE_OPTIONS}
+          onApply={(next) => {
+            setDateFilter(next)
+            setCurrentPageState(1)
+          }}
+        />
+      ) : null}
     </div>
   )
 }
