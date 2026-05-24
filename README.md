@@ -1,16 +1,39 @@
-# React + Vite
+# HRM Project (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple HRM (Human Resource Management) UI built with React, Vite, Tailwind CSS, and React Router, React Icon.
 
-Currently, two official plugins are available:
+## Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Live link: https://hrm-project-eta.vercel.app/
 
-## React Compiler
+## What this solves
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Responsive navbar layout fixes:
+  - Mobile navbar: the menu button stays aligned on the far right.
+  - Desktop navbar: navigation items stay centered.
+  - Spacing tweaks so the search/profile area has room and the profile info stays readable.
 
-## Expanding the ESLint configuration
+## Pages
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Home
+- Employee
+- Hiring
+- Report
+- Files
+- Payroll
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Then open `http://localhost:5173`.
+
+## Build / Preview
+
+```bash
+npm run build
+npm run preview
+```
