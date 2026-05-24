@@ -282,36 +282,35 @@ export default function Employee() {
     <div className="space-y-6">
       <EmployeeHeader onExport={handleExport} onAdd={() => setAddOpen(true)} />
 
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-5">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="text-sm font-bold text-slate-900">Employee Time Logs</div>
-            </div>
-            
-            <EmployeeFilters 
-              searchTerm={searchTerm} setSearchTerm={setSearchTerm}
-              dateFilterLabel={dateFilterLabel}
-              onOpenDateRange={() => setDateRangeOpen(true)}
-              statusFilter={statusFilter} setStatusFilter={setStatusFilter}
-              departmentFilter={departmentFilter} setDepartmentFilter={setDepartmentFilter}
-              setCurrentPageState={setCurrentPageState}
-              STATUS_OPTIONS={STATUS_OPTIONS}
-              DEPARTMENT_OPTIONS={DEPARTMENT_OPTIONS}
-            />
-          </div>
+      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+        {/* Filters row */}
+        <div className="flex flex-col gap-3 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="text-sm font-bold text-slate-900">Employee Time Logs</div>
+          <EmployeeFilters
+            searchTerm={searchTerm} setSearchTerm={setSearchTerm}
+            dateFilterLabel={dateFilterLabel}
+            onOpenDateRange={() => setDateRangeOpen(true)}
+            statusFilter={statusFilter} setStatusFilter={setStatusFilter}
+            departmentFilter={departmentFilter} setDepartmentFilter={setDepartmentFilter}
+            setCurrentPageState={setCurrentPageState}
+            STATUS_OPTIONS={STATUS_OPTIONS}
+            DEPARTMENT_OPTIONS={DEPARTMENT_OPTIONS}
+          />
+        </div>
 
-          <div className="rounded-xl border border-slate-100 bg-slate-50 overflow-hidden">
-            <EmployeeTable 
-              rows={rows} getStatus={getStatus} 
-              approve={approve} reject={reject} undo={undo}
-              handleEditOpen={handleEditOpen} handleExportRow={handleExportRow} handleDeleteRow={handleDeleteRow}
-              openMenuId={openMenuId} setOpenMenuId={setOpenMenuId}
-            />
-          </div>
+        {/* Table — full width, no extra padding */}
+        <div className="border-t border-slate-100 overflow-hidden">
+          <EmployeeTable
+            rows={rows} getStatus={getStatus}
+            approve={approve} reject={reject} undo={undo}
+            handleEditOpen={handleEditOpen} handleExportRow={handleExportRow} handleDeleteRow={handleDeleteRow}
+            openMenuId={openMenuId} setOpenMenuId={setOpenMenuId}
+          />
+        </div>
 
-          {totalPages > 1 && (
-            <div className="flex items-center justify-end gap-2 px-2 py-4 border-t border-slate-100">
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-slate-100">
               <button type="button" onClick={() => setCurrentPageState(Math.max(1, currentPage - 1))} disabled={currentPage === 1} className="rounded-md px-2 py-1 text-sm text-slate-600 hover:bg-slate-100 disabled:opacity-50">← Previous</button>
               <div className="flex items-center gap-1">
                 {Math.max(1, currentPage - 2) > 1 && (
@@ -327,7 +326,6 @@ export default function Employee() {
               <button type="button" onClick={() => setCurrentPageState(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} className="rounded-md px-2 py-1 text-sm text-slate-600 hover:bg-slate-100 disabled:opacity-50">Next →</button>
             </div>
           )}
-        </div>
       </div>
 
       <EmployeeAddModal

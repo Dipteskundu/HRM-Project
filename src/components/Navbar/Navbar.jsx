@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import logo from '../../assets/Frame.png'
+import profileImg from '../../assets/Profile.jpg'
 
 
 const NAV_ITEMS = [
@@ -24,7 +25,7 @@ export default function Navbar() {
   const [query, setQuery] = useState('')
   return (
     <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3">
+      <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex items-center gap-3">
           <img src={logo} alt="Pluto" className="h-7 w-auto" />
         </div>
@@ -76,7 +77,9 @@ export default function Navbar() {
             <div className="font-semibold text-slate-900">Sadik Hasan</div>
             <div>{formatNavbarDate(new Date())}</div>
           </div>
-          <div className="h-9 w-9 overflow-hidden rounded-md border border-slate-200 bg-slate-100" />
+          <div className="h-9 w-9 overflow-hidden rounded-md border border-slate-200 bg-slate-100">
+            <img src={profileImg} alt="Sadik Hasan" className="h-full w-full object-cover" />
+          </div>
         </div>
       </div>
     </header>
